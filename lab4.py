@@ -60,13 +60,13 @@ def are_l1_l2_compatible(x_i, y_i, z_i):
 
 def find_compatible_pairs(l1_candidates, l2_candidates, z_i, len=200):
     compatible_pairs = []
-    for l1_state, _ in l1_candidates:
-        for l2_state, _ in l2_candidates:
-            x_i = extend_lfsr(l1_state[:], [25, 22], len)
-            y_i = extend_lfsr(l2_state[:], [26, 25, 24, 20], len)
+    for l1, _ in l1_candidates:
+        for l2, _ in l2_candidates:
+            x_i = extend_lfsr(l1[:], [25, 22], len)
+            y_i = extend_lfsr(l2[:], [26, 25, 24, 20], len)
             z_cut = z_i[:len]
             if are_l1_l2_compatible(x_i, y_i, z_cut):
-                compatible_pairs.append((l1_state[:], l2_state[:]))
+                compatible_pairs.append((l1[:], l2[:]))
     return compatible_pairs
 
 
@@ -95,7 +95,10 @@ def build_theoretical_s(x_i, y_i, z_i):
 
 
 def generate_all_s_variants(template):
-    unknown_indices = [i for i, val in enumerate(template) if val == '_']
+    unknown_indices = []
+    for i in range(len(template)):
+        if template[i] == '_':
+            unknown_indices.append(i)
     all_variants = []
     for bits in product([0, 1], repeat=len(unknown_indices)):
         s = template[:]
